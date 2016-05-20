@@ -10,7 +10,7 @@ function preload(){
 var bricks;
 var paddle;
 var ball;
-var bop;
+var bop = true;
 
 function create(){
 
@@ -21,6 +21,17 @@ function create(){
 	
 	paddle = game.add.sprite(game.world.centerX,500,'paddle');
 	game.physics.enable(paddle);
+	paddle.body.collideWorldBounds = true;
+	paddle.body.bounce.y = 1;
+	paddle.anchor.setTo(0.5,0.5);
+
+
+
+
+	ball = game.add.sprite(game.world.centerX,paddle.y-10,'ball');
+	game.physics.enable(ball);
+	ball.anchor.set(0.5);
+	ball.body.collideWorldBounds = true;
 	
 
 
@@ -39,10 +50,15 @@ function create(){
 
 
 
+
 }
 
-function update(){
 
+function update(){
+	game.physics.arcade.collide(ball, bricks);
+	game.physics.arcade.collide(ball, paddle);
+
+//paletka jeździ
 	paddle.x = game.input.x-(paddle.width/2);
     if (paddle.x < 24)
     {
@@ -53,5 +69,22 @@ function update(){
         paddle.x = game.width - 24;
     }
 
+//kulka śmiga na paletce
+    if (bop == true)
+    {
+    	ball.x=paddle.x;
+    }
+
+//tu sie dziejo kulki szczelajo i leco (bedo dopiero)
+    if (game.input.activePointer.isDown)
+    {
+    	bop = false;
+    	ball.body.velocity.y = -500;
+    };
+
+    
+
+
 
 }
+
