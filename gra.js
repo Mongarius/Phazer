@@ -21,6 +21,7 @@ var bop = true;
 var lvl=.3;
 var score=0;
 var lives=3;
+var granica = 10000;
 
 var livesText;
 
@@ -81,8 +82,9 @@ function create(){
 	 game.input.onDown.add(releaseBall, this);
 
 	 // gdzieś Ty tą zmienną to nawet ja nie
+	 glownyText = game.add.text((1/2)*game.world.centerX,paddle.y-((1/2)*game.world.centerY), 'Kliknij by zacząć', { font: "70px Arial", fill: "#db0101", align: "left" });
 	 scoreText = game.add.text(10, 10, 'Wynik: 0', { font: "20px Arial", fill: "#ffffff", align: "left" });
-	 livesText = game.add.text(game.world.width-100,10, 'Życia: ' + lives, { font: "20px Arial", fill: "#ffffff", align: "left" })
+	 livesText = game.add.text(game.world.width-100,10, 'Życia: ' + lives, { font: "20px Arial", fill: "#ffffff", align: "left" });
 }
 
 
@@ -120,6 +122,15 @@ function update(){
 function destruct(ball,brick){
 	score+=100;
 	scoreText.text = 'Wynik: ' + score;
+
+	// życie co ileś punktuff
+	if(score == granica)
+	{
+		granica+=10000;
+		lives ++;
+		livesText.text = 'Życia: ' + lives;
+	}
+
 	brick.kill();
 }
 
@@ -135,6 +146,19 @@ function ballLost(){
     	livesText.text = 'Życia: ' + lives;
     	bop = true;
         ball.reset(paddle.x, paddle.y - 10);
+        if(lives==0)
+        {
+        	ball.kill();
+        	glownyText.text = 'Przegrana';
+        	glownyText.visible = true;
+        	kom1Text = game.add.text((1/2)*game.world.centerX,glownyText.y+100,'Kliknij by spróbować ponownie', { font: "20px Arial", fill: "#db0101", align: "left" });
+        	game.input.onDown.add(refresh, this);
+        }
+}
+
+function refresh()
+{
+	location.reload();
 }
 
 
@@ -146,6 +170,7 @@ function randomInterval(min,max)
 
 function releaseBall(){
 
+	glownyText.visible = false;
     if (bop){
         bop = false;
         var f = Math.floor(game.world.height*lvl);
